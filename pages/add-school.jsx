@@ -48,37 +48,37 @@ export default function AddSchoolPage() {
             <div className="mb-4">
                 <label htmlFor="name" className="block text-gray-700 font-medium mb-2">School Name</label>
                 <input type="text" id="name" {...register('name', { required: 'School name is required' })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full text-gray-600 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
             </div>
             <div className="mb-4">
                 <label htmlFor="address" className="block text-gray-700 font-medium mb-2">Address</label>
                 <input type="text" id="address" {...register('address', { required: 'Address is required' })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full px-4 py-2 text-gray-600 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
             </div>
             <div className="mb-4">
                 <label htmlFor="city" className="block text-gray-700 font-medium mb-2">City</label>
                 <input type="text" id="city" {...register('city', { required: 'City is required' })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full px-4 text-gray-600 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
             </div>
             <div className="mb-4">
                 <label htmlFor="state" className="block text-gray-700 font-medium mb-2">State</label>
                 <input type="text" id="state" {...register('state', { required: 'State is required' })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full px-4 text-gray-600 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state.message}</p>}
             </div>
             <div className="mb-4">
                 <label htmlFor="contact" className="block text-gray-700 font-medium mb-2">Contact Number</label>
                 <input type="number" id="contact" {...register('contact', { required: 'Contact is required' })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full text-gray-600 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
             </div>
             <div className="mb-4">
                 <label htmlFor="email_id" className="block text-gray-700 font-medium mb-2">Email ID</label>
                 <input type="email" id="email_id" {...register('email_id', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email format' } })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full text-gray-600 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 {errors.email_id && <p className="text-red-500 text-sm mt-1">{errors.email_id.message}</p>}
             </div>
             <div className="mb-6">
