@@ -14,25 +14,27 @@ async function getDbConnection() {
     });
 }
 
-// --- Multer Configuration for Image Upload ---
-const storage = multer.diskStorage({
-    destination: './public/schoolImages',
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    },
-});
+// --- Multer Configuration ---
+const isVercel = process.env.VERCEL === '1';
+
+// Use memory storage on Vercel (read-only filesystem), and disk storage locally
+const storage = isVercel
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: './public/schoolImages',
+      filename: (req, file, cb) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+          cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+      },
+    });
 
 const upload = multer({ storage: storage });
 
 // --- API Router ---
 const router = createRouter();
 
-// This middleware will only run on non-Vercel environments to handle file uploads.
-// It populates req.body and req.file for the POST handler.
-if (process.env.VERCEL !== '1') {
-  router.use(upload.single('image'));
-}
+// Always apply the multer middleware to parse the form data.
+router.use(upload.single('image'));
 
 // GET handler to fetch all schools
 router.get(async (req, res) => {
@@ -53,13 +55,12 @@ router.get(async (req, res) => {
 router.post(async (req, res) => {
     let connection;
     try {
-        // The middleware has already processed the form data.
-        // On Vercel, Next.js's body parser runs. Locally, multer runs.
         const { name, address, city, state, contact, email_id } = req.body;
         
-        // Use a placeholder on Vercel or if no file is uploaded.
-        // Otherwise, use the real filename from multer.
-        const imageName = req.file ? req.file.filename : 'placeholder-deployed.jpg';
+        // Use the generated filename locally, or a placeholder on Vercel
+        const imageName = req.file && !isVercel
+            ? req.file.filename
+            : 'placeholder-deployed.jpg';
 
         connection = await getDbConnection();
         const query = 'INSERT INTO schools (name, address, city, state, contact, email_id, image) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -68,10 +69,7 @@ router.post(async (req, res) => {
         await connection.execute(query, values);
         res.status(201).json({ success: true, message: 'School added successfully.' });
     } catch (error) {
-        // Add more detailed logging for debugging
         console.error('API POST Error:', error);
-        console.error('Request Body:', req.body);
-        console.error('Request File:', req.file);
         res.status(500).json({ success: false, message: 'Internal Server Error', error: error.message });
     } finally {
         if (connection) await connection.end();
@@ -89,10 +87,11 @@ export default router.handler({
     },
 });
 
-// Let Vercel handle the body parsing on deployment, but disable it locally so multer can.
+// THIS IS THE FIX: The config is now static, which resolves the build error.
+// We always disable bodyParser because multer is now handling all environments.
 export const config = {
     api: {
-        bodyParser: process.env.VERCEL === '1',
+        bodyParser: false,
     },
 };
 
